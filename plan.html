@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منهج "ذا بوتشري" (نسخة أ. عبدالله) 🚀</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #38bdf8;
+            --accent: #ef4444;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+            --purple: #a855f7;
+            --indigo: #6366f1;
+            --warning: #fbbf24;
+            --milestone: #0ea5e9;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            padding-top: 100px;
+            line-height: 1.8;
+        }
+
+        /* --- FIREBASE UI --- */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .auth-box {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .btn-google {
+            background: white;
+            color: #333;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: sans-serif;
+            transition: transform 0.2s;
+        }
+
+        .btn-google:hover {
+            transform: scale(1.05);
+        }
+
+        .user-bar {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 15px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--border);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- NOTES SECTION --- */
+        .notes-area {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px dashed var(--border);
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .notes-label {
+            font-weight: 700;
+            color: var(--warning);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notes-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            padding: 1rem;
+            font-family: 'Cairo', sans-serif;
+            min-height: 100px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .notes-input:focus {
+            outline: none;
+            border-color: var(--warning);
+        }
+
+        .save-status {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .save-status.visible {
+            opacity: 1;
+        }
+
+
+        /* --- EXISTING STYLES (Preserved) --- */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: ltr;
+        }
+
+        .progress-wrapper {
+            width: 100%;
+            max-width: 950px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .progress-bar-bg {
+            flex-grow: 1;
+            height: 12px;
+            background: var(--bg-card);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--purple));
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-text {
+            color: var(--primary);
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            margin-bottom: 4rem;
+            font-size: 1.2rem;
+        }
+
+        .session-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 4rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .session-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .session-title {
+            margin: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .session-badge {
+            font-size: 0.85rem;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .badge-base {
+            background: #64748b;
+        }
+
+        .badge-js {
+            background: #fbbf24;
+            color: black;
+        }
+
+        .badge-react {
+            background: #38bdf8;
+            color: black;
+        }
+
+        .badge-next {
+            background: #2563eb;
+            color: white;
+        }
+
+        .badge-auth {
+            background: var(--indigo);
+        }
+
+        .badge-db {
+            background: #a855f7;
+        }
+
+        .badge-api {
+            background: #db2777;
+        }
+
+        .badge-feature {
+            background: #ef4444;
+        }
+
+        .badge-deploy {
+            background: var(--success);
+        }
+
+        .session-body {
+            padding: 2rem;
+        }
+
+        .milestone-box {
+            background: linear-gradient(90deg, rgba(14, 165, 233, 0.1) 0%, rgba(14, 165, 233, 0.02) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-right: 5px solid var(--milestone);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2.5rem;
+            color: var(--text);
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .milestone-icon {
+            font-size: 2rem;
+            line-height: 1;
+            margin-top: 5px;
+        }
+
+        .milestone-content h4 {
+            margin: 0 0 8px 0;
+            color: var(--milestone);
+            font-size: 1.1rem;
+        }
+
+        .milestone-content p {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-dim);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (max-width: 850px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
+
+        .challenge-box {
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-right: 4px solid var(--warning);
+        }
+
+        .engineering-box {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-right: 4px solid var(--primary);
+        }
+
+        .section-label {
+            display: block;
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .label-challenge {
+            color: var(--warning);
+        }
+
+        .label-eng {
+            color: var(--primary);
+        }
+
+        .topics-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .topic-item {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 18px;
+        }
+
+        .topic-item:last-child {
+            border-bottom: none;
+        }
+
+        .topic-checkbox {
+            appearance: none;
+            width: 26px;
+            min-width: 26px;
+            height: 26px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-dark);
+            cursor: pointer;
+            position: relative;
+            margin-top: 4px;
+        }
+
+        .topic-checkbox:checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .topic-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .topic-title {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .topic-desc {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+        }
+
+        .session-footer {
+            margin-top: 2.5rem;
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .assignment-box {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-right: 4px solid var(--accent);
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .example-box {
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-right: 4px solid var(--purple);
+            padding: 1.2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .example-box a {
+            color: var(--purple);
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 2px solid rgba(168, 85, 247, 0.3);
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fbbf24;
+            font-size: 0.9em;
+            direction: ltr;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- AUTH OVERLAY -->
+    <div id="authScreen" class="auth-overlay">
+        <div class="auth-box">
+            <h1>🧑‍💻 مرحباً أستاذ عبدالله</h1>
+            <p>للبدء في التعلم وحفظ تقدمك وملاحظاتك سحابياً، يرجى تسجيل الدخول.</p>
+
+            <div id="firebaseConfigWarning" style="color:red; display:none; margin:10px 0;">
+                تحذير: لم يتم إعداد Firebase Config في الكود!
+            </div>
+
+            <button id="loginBtn" class="btn-google">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+                تسجيل الدخول عبر Google
+            </button>
+        </div>
+    </div>
+
+    <!-- USER BAR -->
+    <div id="userBar" class="user-bar hidden">
+        <img id="userAvatar" class="user-avatar" src="" alt="User">
+        <button id="logoutBtn" class="btn-logout">خروج</button>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-container">
+        <div class="progress-wrapper">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+    </div>
+
+    <h1>☁️ منهج "ذا بوتشري" (أ. عبدالله)</h1>
+    <p class="subtitle">تم تصميم هذا المنهج خصيصاً ليناسب متطلبات مشروعك.</p>
+
+    <!-- SESSION 1 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-base">الجلسة 1</span> البنية التحتية (Setup)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🏗️</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>بدون هذا الأساس، لن نتمكن من رفع الموقع لاحقاً على Vercel أو مشاركة الكود.</p>
+                </div>
+            </div>
+            <div class="detail-grid">
+                <div class="info-box challenge-box"><span class="section-label label-challenge">🛑 المشكلة</span>الفوضى
+                    في البداية تعني الكوارث في النهاية.</div>
+                <div class="info-box engineering-box"><span class="section-label label-eng">🛠️ الحل</span>Git &
+                    Prettier لتوحيد العمل.</div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s1-t1">
+                    <div class="topic-content"><span class="topic-title">تثبيت VS Code، Git، Node.js</span></div>
+                </li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s1-t2">
+                    <div class="topic-content"><span class="topic-title">إنشاء حساب GitHub وربطه بالمشروع</span></div>
+                </li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s1-t3">
+                    <div class="topic-content"><span class="topic-title">تثبيت إضافات التنسيق (Prettier & ESLint)</span>
+                    </div>
+                </li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s1">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s1"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 2 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-base">الجلسة 2</span> هندسة التصميم (CSS Layouts)
+            </h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🎨</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>هذا الكود هو المسؤول عن جعل <b>شريط القائمة (Navbar)</b> يظل ثابتاً أثناء النزول، وعرض <b>صور
+                            المنتجات</b> بشكل شبكي.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s2-t1"><span
+                        class="topic-title">فهم CSS Grid Columns</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s2-t2"><span
+                        class="topic-title">خاصية gap وتوزيع المسافات</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s2-t3"><span
+                        class="topic-title">تطبيق position: sticky على الـ Header</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s2-t4"><span
+                        class="topic-title">استخدام z-index لضمان ظهور القائمة فوق المحتوى</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s2">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s2"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 3 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-js">الجلسة 3</span> نمذجة البيانات (Data
+                Structures)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🍔</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>هذا الملف (data.js) هو "قلب" الموقع الذي يحتوي على أسماء الوجبات، الأسعار، والصور التي تظهر
+                        للعميل.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s3-t1"><span
+                        class="topic-title">كتابة كائنات JSON (Objects)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s3-t2"><span
+                        class="topic-title">إنشاء مصفوفة المنتجات (Arrays)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s3-t3"><span
+                        class="topic-title">التأكد من صحة أنواع البيانات (String vs Number)</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s3">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s3"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 4 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-js">الجلسة 4</span> المنطق البرمجي (Functional
+                Logic)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🧮</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>المعادلات التي تحسب <b>إجمالي الفاتورة</b>، وتفلتر المنتجات عند اختيار "دجاج" أو "لحم".</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s4-t1"><span
+                        class="topic-title">تصفية المنتجات بـ .filter()</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s4-t2"><span
+                        class="topic-title">حساب المجموع بـ .reduce()</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s4-t3"><span
+                        class="topic-title">تحويل البيانات بـ .map()</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s4-t4"><span
+                        class="topic-title">البحث عن عنصر معين بـ .find()</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s4">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s4"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 5 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-js">الجلسة 5</span> التفاعل الحي (DOM & Events)
+            </h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🖱️</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>جعل <b>زر "أضف للسلة"</b> يستجيب فعلياً للنقر.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s5-t1"><span
+                        class="topic-title">ربط الأزرار بـ onClick</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s5-t2"><span
+                        class="topic-title">قراءة المدخلات (Input Values)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s5-t3"><span
+                        class="topic-title">تعديل الـ HTML بالجافاسكريبت</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s5">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s5"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 6 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-react">الجلسة 6</span> التحول إلى React (JSX)
+            </h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">⚛️</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>تحويل الـ HTML القديم إلى صيغة React الحديثة التي سنستخدمها لبناء التطبيق بالكامل.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s6-t1"><span
+                        class="topic-title">قواعد JSX الأساسية</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s6-t2"><span
+                        class="topic-title">الفرق بين class و className</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s6-t3"><span
+                        class="topic-title">إغلاق التاجات (Self-closing tags)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s6-t4"><span
+                        class="topic-title">تثبيت بيئة React/Next.js</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s6">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s6"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 7 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-react">الجلسة 7</span> هندسة المكونات
+                (Components)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🧩</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>بناء "قالب" واحد لكرت المنتج (<b>Product Card</b>) واستخدامه لعرض الـ 50 وجبة، بدلاً من تكرار
+                        الكود 50 مرة.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s7-t1"><span
+                        class="topic-title">تقسيم الصفحة إلى أجزاء (Header, Footer, Main)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s7-t2"><span
+                        class="topic-title">إنشاء مكون ProductCard.jsx</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s7-t3"><span
+                        class="topic-title">استدعاء المكونات (Import/Export)</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s7">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s7"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 8 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-react">الجلسة 8</span> تدفق البيانات (Props)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">📦</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>تعبئة كل كرت بالبيانات الصحيحة (صورة البرجر للبرجر، وسعر الستيك للستيك).</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s8-t1"><span
+                        class="topic-title">مفهوم الـ Props الأب والابن</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s8-t2"><span
+                        class="topic-title">تمرير النصوص والصور عبر Props</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s8-t3"><span
+                        class="topic-title">Destructuring Props { name, price }</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s8-t4"><span
+                        class="topic-title">استخدام map لتوليد قائمة الكروت</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s8">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s8"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 9 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-react">الجلسة 9</span> إدارة الحالة (State)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🔘</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>تشغيل <b>زر التبديل (Switch)</b> بين "توصيل" و "استلام" وتغيير محتوى الصفحة بناءً عليه.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s9-t1"><span
+                        class="topic-title">استيراد وتفعيل useState</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s9-t2"><span
+                        class="topic-title">تغيير القيم عند النقر (setState)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s9-t3"><span
+                        class="topic-title">الرسم الشرطي (Conditional Rendering)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s9-t4"><span
+                        class="topic-title">إنشاء Counter بسيط للكمية</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s9">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s9"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 10 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-react">الجلسة 10</span> الآثار الجانبية (Effects)
+            </h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">⏳</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>إظهار <b>شاشات التحميل (Loading Skeletons)</b> الرمادية الرائعة قبل وصول البيانات.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s10-t1"><span
+                        class="topic-title">متى نستخدم useEffect؟</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s10-t2"><span
+                        class="topic-title">مصفوفة التبعيات (Dependency Array)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s10-t3"><span
+                        class="topic-title">محاكاة تأخير الشبكة (Loading State)</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s10">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s10"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 11 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-next">الجلسة 11</span> نظام الصفحات (Routing)
+            </h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🌐</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>بناء صفحة <b>/about</b>، وصفحة <b>/branches</b>، وصفحة <b>/policy</b> وربطهم بالتذييل (Footer).
+                    </p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s11-t1"><span
+                        class="topic-title">Next.js App Router Structure</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s11-t2"><span
+                        class="topic-title">استخدام مكون Link للتنقل السريع</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s11-t3"><span
+                        class="topic-title">إنشاء layout.js مشترك لكل الصفحات</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s11">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s11"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 12 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-next">الجلسة 12</span> الصفحات الديناميكية
+                (Slugs)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🥩</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>عند الضغط على منتج، يفتح صفحة خاصة به <b>/product/premium-steak</b> تعرض تفاصيله فقط.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s12-t1"><span
+                        class="topic-title">إنشاء مجلد [slug]</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s12-t2"><span
+                        class="topic-title">قراءة الـ params من الرابط</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s12-t3"><span
+                        class="topic-title">جلب بيانات المنتج المطابق للرابط</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s12-t4"><span
+                        class="topic-title">تصميم صفحة تفاصيل المنتج</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s12">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s12"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 13 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-auth">الجلسة 13</span> نظام المستخدمين (Clerk
+                Auth)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🔐</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>إضافة زر <b>"تسجيل الدخول"</b> ومنع الدخول لصفحة "طلباتي" إلا للمشتركين.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s13-t1"><span
+                        class="topic-title">إنشاء حساب Clerk وربطه</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s13-t2"><span
+                        class="topic-title">إضافة مكونات SignedIn و SignedOut</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s13-t3"><span
+                        class="topic-title">حماية المسارات بملف middleware.js</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s13-t4"><span
+                        class="topic-title">تخصيص شكل زر المستخدم</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s13">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s13"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 14 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-db">الجلسة 14</span> قواعد البيانات (PostgreSQL)
+            </h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">💽</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>حجز مساحة تخزين سحابية (Cloud) لحفظ المنتجات والطلبات بشكل دائم وآمن.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s14-t1"><span
+                        class="topic-title">إنشاء مشروع Neon Postgres</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s14-t2"><span
+                        class="topic-title">الحصول على Connection String</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s14-t3"><span
+                        class="topic-title">إعداد متغيرات البيئة (.env)</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s14">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s14"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 15 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-db">الجلسة 15</span> وسيط البيانات (Prisma)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🔌</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>نقل بيانات المنيو من ملفك المحلي إلى قاعدة البيانات السحابية (عملية الرفع).</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s15-t1"><span
+                        class="topic-title">تثبيت Prisma وربطه</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s15-t2"><span
+                        class="topic-title">تصميم الجداول (schema.prisma)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s15-t3"><span
+                        class="topic-title">تنفيذ الهجرة (Migration)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s15-t4"><span
+                        class="topic-title">كتابة سكربت الرفع (Seeding) وتشغيله</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s15">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s15"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 16 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-api">الجلسة 16</span> بناء السيرفر (API)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">📡</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>جعل الموقع يطلب المنتجات من السيرفر الحقيقي ويعرضها بدلاً من البيانات الوهمية.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s16-t1"><span
+                        class="topic-title">إنشاء مسار /api/products</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s16-t2"><span
+                        class="topic-title">استخدام Prisma Client لجلب البيانات</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s16-t3"><span
+                        class="topic-title">اختبار الـ API بمتصفح أو Postman</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s16">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s16"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 17 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-feature">الجلسة 17</span> البحث الذكي (Predictive
+                Search)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🔍</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>شريط البحث الذي يقترح "برجر دجاج" بمجرد كتابة حرف "بـ" بسرعة ودقة.</p>
+                </div>
+            </div>
+            <div class="detail-grid">
+                <div class="info-box challenge-box"><span class="section-label label-challenge">🛑 المشكلة</span>إرسال
+                    طلب للسيرفر مع كل ضغطة زر سيغرق قاعدة البيانات.</div>
+                <div class="info-box engineering-box"><span class="section-label label-eng">🛠️ الحل</span>Debouncing
+                    (الانتظار الذكي 300ms) + Indexing (الفهرسة السريعة).</div>
+            </div>
+
+            <!-- TEACHING SECTION: PREDICTIVE SEARCH -->
+            <div class="teaching-section"
+                style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+                <h3 style="color: #34d399; margin-top: 0; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.5rem;">🎓</span> درس تعليمي: البحث التنبؤي بدون ذكاء اصطناعي
+                </h3>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #e2e8f0; margin-bottom: 0.5rem;">1. مقدمة (Introduction)</h4>
+                    <p style="color: #94a3b8; margin: 0;">الهدف هو تحسين تجربة المستخدم أثناء الكتابة. هذه الطريقة تعتمد
+                        على تحسينات Frontend و Database تقليدية ولا تستخدم أي ذكاء اصطناعي (AI/ML).</p>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #e2e8f0; margin-bottom: 0.5rem;">2. المشكلة الأساسية (The Problem)</h4>
+                    <p style="color: #94a3b8; margin: 0;">إرسال طلب للسيرفر مع كل ضغطة حرف (Keypress) سيؤدي إلى إغراق
+                        قاعدة البيانات (DDoS ذاتي) وبطء شديد في الموقع.</p>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #e2e8f0; margin-bottom: 0.5rem;">3. الحل الجوهري (The Solution)</h4>
+                    <ul style="list-style: disc; padding-right: 20px; color: #94a3b8;">
+                        <li><b>Debouncing (الصبر الذكي):</b> الانتظار 300ms بعد توقف المستخدم عن الكتابة قبل إرسال
+                            الطلب.</li>
+                        <li><b>Database Indexing (الفهرسة):</b> إنشاء فهرس للحقول التي يتم البحث فيها لضمان سرعة
+                            الاستجابة.</li>
+                        <li><b>Efficient Queries:</b> استخدام <code>ILIKE</code> أو <code>contains</code> لمطابقة النصوص
+                            بغض النظر عن حالة الأحرف.</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #e2e8f0; margin-bottom: 0.5rem;">4. تسلسل التنفيذ (Execution Flow)</h4>
+                    <ol style="padding-right: 20px; color: #94a3b8;">
+                        <li>المستخدم يكتب في مربع البحث.</li>
+                        <li>الواجهة (Frontend) تنتظر (Debounce).</li>
+                        <li>يتم إرسال الطلب فقط إذا كان النص أطول من حرفين.</li>
+                        <li>السيرفر يبحث في القاعدة باستخدام الفهرس.</li>
+                        <li>يتم إرجاع 5-7 نتائج فقط.</li>
+                        <li>الواجهة تعرض النتائج في قائمة منسدلة.</li>
+                    </ol>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #e2e8f0; margin-bottom: 0.5rem;">5. تجربة المستخدم والأداء (UX & Performance)</h4>
+                    <p style="color: #94a3b8; margin: 0;">يجب إخفاء القائمة عند فقدان التركيز (Blur)، وتحديد عدد النتائج
+                        لتفادي التشتت، والتعامل مع بطء الشبكة.</p>
+                </div>
+
+                <div style="margin-bottom: 0;">
+                    <h4 style="color: #e2e8f0; margin-bottom: 0.5rem;">6. الخلاصة (Key Takeaways)</h4>
+                    <p style="color: #94a3b8; margin: 0;">البحث التنبؤي الاحترافي لا يحتاج لذكاء اصطناعي. ثلاثية
+                        (Debounce + Indexing + Efficient Queries) هي الأساس في أكبر المتاجر العالمية.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s17-t1"><span
+                        class="topic-title">برمجة useDebounce Hook</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s17-t2"><span
+                        class="topic-title">استعلام Prisma ILIKE للبحث المرن</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s17-t3"><span
+                        class="topic-title">تصميم قائمة النتائج المقترحة</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s17">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s17"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 18 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-feature">الجلسة 18</span> الجدولة والوقت
+                (Scheduling Logic)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">📅</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>صفحة <b>/time</b> التي تمنع العميل من اختيار يوم الجمعة أو وقت في الماضي.</p>
+                </div>
+            </div>
+            <div class="detail-grid">
+                <div class="info-box challenge-box"><span class="section-label label-challenge">🛑
+                        المشكلة</span>التواريخ معقدة والتعامل مع المناطق الزمنية صعب.</div>
+                <div class="info-box engineering-box"><span class="section-label label-eng">🛠️ الحل</span>خوارزمية Slot
+                    Generation. توليد قائمة الأوقات المتاحة وحذف الأوقات المحجوبة.</div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s18-t1"><span
+                        class="topic-title">تثبيت Day.js / Moment.js</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s18-t2"><span
+                        class="topic-title">توليد مصفوفة الـ 7 أيام القادمة</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s18-t3"><span
+                        class="topic-title">فلترة الساعات الماضية (Past Time Logic)</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s18">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s18"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 19 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-react">الجلسة 19</span> الحالة العامة (Redux
+                Toolkit)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🛒</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>جعل <b>سلة المشتريات</b> تتذكر المنتجات حتى لو انتقلت لصفحة أخرى أو أغلقت المتصفح.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s19-t1"><span
+                        class="topic-title">إعداد Redux Store</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s19-t2"><span
+                        class="topic-title">إنشاء Cart Slice (Actions & Reducers)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s19-t3"><span
+                        class="topic-title">ربط أيقونة السلة بالـ Store</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s19-t4"><span
+                        class="topic-title">الحفظ التلقائي في LocalStorage</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s19">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s19"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 20 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-react">الجلسة 20</span> أدوات متقدمة (Custom
+                Hooks)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🧹</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>ترتيب الكود وجعله احترافياً لسهولة الصيانة لاحقاً.</p>
+                </div>
+            </div>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s20">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s20"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 21 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-feature">الجلسة 21</span> العمليات الخلفية
+                (Inngest)</h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">⚙️</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>ضمان وصول <b>الإيميل التأكيدي</b> للعميل حتى لو حدث خطأ بسيط في الشبكة.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s21-t1"><span
+                        class="topic-title">إعداد Inngest محلياً</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s21-t2"><span
+                        class="topic-title">إنشاء دالة إرسال الإيميل (Background Function)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s21-t3"><span
+                        class="topic-title">اختبار سيناريو الفشل وإعادة المحاولة</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s21">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s21"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 22 -->
+    <div class="session-card">
+        <div class="session-header">
+            <h2 class="session-title"><span class="session-badge badge-deploy">الجلسة 22</span> الإطلاق (Deployment)
+            </h2>
+        </div>
+        <div class="session-body">
+            <div class="milestone-box">
+                <div class="milestone-icon">🚀</div>
+                <div class="milestone-content">
+                    <h4>أهمية هذا الجزء للموقع</h4>
+                    <p>نشر الموقع للناس والحصول على الرابط النهائي <code>abdullah-project.vercel.app</code>.</p>
+                </div>
+            </div>
+            <ul class="topics-list">
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s22-t1"><span
+                        class="topic-title">رفع الكود إلى GitHub</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s22-t2"><span
+                        class="topic-title">ربط المشروع بـ Vercel</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s22-t3"><span
+                        class="topic-title">إعداد متغيرات البيئة (Environment Variables)</span></li>
+                <li class="topic-item"><input type="checkbox" class="topic-checkbox" id="s22-t4"><span
+                        class="topic-title">الاختبار النهائي للموقع الحي</span></li>
+            </ul>
+            <div class="notes-area">
+                <div class="notes-header"><span class="notes-label">📝 ملاحظاتي <span class="save-status"
+                            id="status-s22">تم الحفظ</span></span></div><textarea class="notes-input"
+                    id="note-s22"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE SDK (Modular) -->
+    <script type="module">
+        // ----------------------------------------------------
+        // ⚙️ CONFIGURATION
+        // ----------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNcwIJ6NINZemPEsmIyUz1g4Yjsd8VZFU",
+            authDomain: "roadmap-52b68.firebaseapp.com",
+            projectId: "roadmap-52b68",
+            storageBucket: "roadmap-52b68.firebasestorage.app",
+            messagingSenderId: "934909939104",
+            appId: "1:934909939104:web:88adefc30ab221b858a8c5",
+            measurementId: "G-S9JM1PPRQF"
+        };
+        // ----------------------------------------------------
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Check for file:// protocol
+        if (window.location.protocol === 'file:') {
+            alert("⚠️ خطأ مهم:\n\nلا يمكن تشغيل هذا الملف مباشرة (Double Click).\nيجب تشغيله عبر سيرفر محلي (Localhost)\n\nالحل:\n1. افتح الملف في VS Code\n2. اضغط كليك يمين واختر 'Open with Live Server'");
+            document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#0f172a;color:#ef4444;text-align:center;"><div><h1>🛑 بروتوكول غير مدعوم</h1><p>يجب تشغيل الملف عبر سيرفر (localhost).</p></div></div>';
+            throw new Error("File protocol not supported");
+        }
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+
+        // UI Elements
+        const authScreen = document.getElementById('authScreen');
+        const userBar = document.getElementById('userBar');
+        const userAvatar = document.getElementById('userAvatar');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const checkboxes = document.querySelectorAll('.topic-checkbox');
+        const notesInputs = document.querySelectorAll('.notes-input');
+
+        // --- AUTH LOGIC ---
+        loginBtn.addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch(err => {
+                alert(err.message);
+                console.error(err);
+            });
+        });
+
+        logoutBtn.addEventListener('click', () => signOut(auth));
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                authScreen.classList.add('hidden');
+                userBar.classList.remove('hidden');
+                userAvatar.src = user.photoURL;
+                await loadUserData(user.uid);
+            } else {
+                currentUser = null;
+                authScreen.classList.remove('hidden');
+                userBar.classList.add('hidden');
+            }
+        });
+
+        // --- DATABASE LOGIC ---
+
+        // 1. Sync Checkboxes
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', async (e) => {
+                if (!currentUser) return;
+                updateProgressUI();
+
+                const topicId = e.target.id;
+                const isChecked = e.target.checked;
+
+                const userRef = doc(db, "users", currentUser.uid);
+                await setDoc(userRef, {
+                    progress: { [topicId]: isChecked }
+                }, { merge: true });
+            });
+        });
+
+        // 2. Sync Notes (Debounced)
+        let timeout = null;
+        notesInputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                if (!currentUser) return;
+                const noteId = e.target.id;
+                const content = e.target.value;
+                const statusSpan = document.getElementById('status-' + noteId.split('-')[1]);
+
+                statusSpan.innerText = "جاري الحفظ...";
+                statusSpan.classList.add('visible');
+
+                clearTimeout(timeout);
+                timeout = setTimeout(async () => {
+                    const userRef = doc(db, "users", currentUser.uid);
+                    await setDoc(userRef, {
+                        notes: { [noteId]: content }
+                    }, { merge: true });
+
+                    statusSpan.innerText = "تم الحفظ";
+                    setTimeout(() => statusSpan.classList.remove('visible'), 2000);
+                }, 1000);
+            });
+        });
+
+        async function loadUserData(uid) {
+            const docRef = doc(db, "users", uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if (data.progress) {
+                    Object.entries(data.progress).forEach(([key, val]) => {
+                        const el = document.getElementById(key);
+                        if (el) el.checked = val;
+                    });
+                }
+                if (data.notes) {
+                    Object.entries(data.notes).forEach(([key, val]) => {
+                        const el = document.getElementById(key);
+                        if (el) el.value = val;
+                    });
+                }
+                updateProgressUI();
+            }
+        }
+
+        function updateProgressUI() {
+            const all = document.querySelectorAll('.topic-checkbox').length;
+            const checked = document.querySelectorAll('.topic-checkbox:checked').length;
+            const percent = all > 0 ? Math.round((checked / all) * 100) : 0;
+
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressText').innerText = percent + '%';
+        }
+    </script>
+</body>
+
+</html>
